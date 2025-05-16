@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Saved Events</title>
+    <style>
+        #event-list li {
+            margin-bottom: 10px;
+            padding: 8px;
+            font-size: 1.5rem;
+            list-style-type: none; 
+            background-color: #e0e2ee; 
+            border-radius: 5px; 
+        }
+    </style>
+</head>
+<body>
+    <p>Saved Events</p>
+    <ul id="event-list"></ul>
+    <p id="notification-message"></p>
+    <script>
+        window.onload=function(){
+            const eventList=document.getElementById('event-list');
+            let eventsFound=false;
+
+            const currentDate=new Date();
+            const currentDateString=currentDate.toISOString().split('T')[0];
+            const currentTimeString=currentDate.toTimeString().split(' ')[0];
+
+            for(let i=1;i<=10;i++){
+                const eventName=localStorage.getItem(`Personal-event${i}-name`);
+                const eventDate=localStorage.getItem(`Personal-event${i}-date`);
+                const eventTime=localStorage.getItem(`Personal-event${i}-time`);
+            
+            
+            if(eventName && eventDate && eventTime){
+
+                const eventDateTime2=new Date(`${eventDate}T${eventTime}`);
+                if(eventDateTime2<currentDate){
+                    localStorage.removeItem(`Personal-event${i}-name`);
+                    localStorage.removeItem(`Personal-event${i}-date`);
+                    localStorage.removeItem(`Personal-event${i}-time`);
+                    continue;
+                }
+                eventsFound=true;
+                const listItem=document.createElement('li');
+                listItem.textContent= `Event ${i}:${eventName}, Date:${eventDate},Time:${eventTime}`;
+                eventList.appendChild(listItem);
+
+                if(eventDate===currentDateString && eventTime===currentTimeString){
+                    alert(`Your ${eventName} is at ${eventTime} on ${eventDate}.`);
+                }
+            }
+        }
+            if(!eventsFound){
+                eventList.innerText="No events saved yet";
+            }
+        }
+    </script>
+</body>
+</html>
