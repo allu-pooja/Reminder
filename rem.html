@@ -5,133 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saved Events</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            text-align: center;
-        }
+.event-box {
+    position: relative;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #f0f8ff;
+    border-left: 5px solid #6495ed;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+.event-box:hover {
+    background-color: #e6f0ff;
+}
+.event-options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: white;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-top: 4px;
+    z-index: 1;
+}
+.event-options button {
+    margin: 2px;
+    padding: 4px 8px;
+    cursor: pointer;
+}
+</style>
 
-        h2 {
-            color: #333;
-        }
-
-        #event-list {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            padding: 0;
-        }
-
-        .event-box {
-            width: 250px;
-            height: 50px;
-            margin: 10px;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-            font-size: 1rem;
-            font-weight: bold;
-            text-align: center;
-        }
-
-        /* Different colors for different event categories */
-        .Academics {
-            background-color: #ffcccb; /* Light Red */
-            border-left: 5px solid #ff4444;
-            border-right: 5px sloid #ff4444;
-        }
-        
-        .Personal {
-            background-color: #d4edda; /* Light Green */
-            border-left: 5px solid #284ea7;
-            border-right: #284ea7;
-        }
-
-        .Events {
-            background-color: #cce5ff; /* Light Blue */
-            border-left: 5px solid #b53ad6;
-            border-right: #b53ad6;
-        }
-
-        #show-reminders {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        #show-reminders:hover {
-            background-color: #45a049;
-        }
-    </style>
 </head>
 <body>
     <h2>Saved Events</h2>
     <div id="event-list"></div>
     <p id="notification-message"></p>
 
-    <script>
-        window.onload = function () {
-            
-
-            const eventList = document.getElementById('event-list');
-            let eventsFound = false;
-            const currentDate = new Date();
-            const currentDateString = currentDate.toISOString().split('T')[0];
-            const currentTimeString = currentDate.toTimeString().split(' ')[0].slice(0, 5); 
-
-            let allEvents = []; 
-
-            function loadEvents(category) {
-                for (let i = 1; i <= 10; i++) {
-                    const eventName = localStorage.getItem(`${category}-event${i}-name`);
-                    const eventDate = localStorage.getItem(`${category}-event${i}-date`);
-                    const eventTime = localStorage.getItem(`${category}-event${i}-time`);
-
-                    if (eventName && eventDate && eventTime) {
-                        const eventDateTime = new Date(`${eventDate}T${eventTime}`);
-
-                        if (eventDateTime < currentDate) {
-                            localStorage.removeItem(`${category}-event${i}-name`);
-                            localStorage.removeItem(`${category}-event${i}-date`);
-                            localStorage.removeItem(`${category}-event${i}-time`);
-                            continue;
-                        }
-
-                        eventsFound = true;
-                        const formattedEvent = `${eventName} is at ${eventTime} on ${eventDate}`;
-                        allEvents.push(formattedEvent);
-
-                        const eventBox = document.createElement('div');
-                        eventBox.classList.add('event-box', category);
-                        eventBox.textContent = `${formattedEvent}`;
-                        eventList.appendChild(eventBox);
-                        
-                    }
-                }
-            }
-
-            loadEvents("Academics");
-            loadEvents("Personal");
-            loadEvents("Events");
-
-            if (!eventsFound) {
-                eventList.innerHTML = "<p>No events saved yet</p>";
-            }
-
-            document.getElementById("show-reminders").addEventListener("click", function () {
-                if (allEvents.length > 0) {
-                    alert("Your Saved Events:\n\n" + allEvents.join("\n"));
-                } else {
-                    alert("No events saved.");
-                }
-            });
-        };
-    </script>
+    <script src="view.js"></script>
 </body>
 </html>

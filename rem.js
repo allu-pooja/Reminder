@@ -1,49 +1,64 @@
- let section="";
+let section="";
  document.addEventListener("DOMContentLoaded", function () {
             const eventContainer = document.querySelector(".events-container");
              section = eventContainer.dataset.section;
 
-            function createEventBox(index) {
+            function createEventBox() {
                 return `
                     <div class="box">
-                        <p>Event ${index}</p>
-                        <input type="text" id="event${index}-name" placeholder="Enter event type">
-                        <input type="date" id="event${index}-date">
-                        <input type="time" id="event${index}-time">
-                        <button type="button" onclick="saveEvent(${index})">Set Reminder</button>
-                        <p id="save-status-${index}" class="status-message"></p>
+                        <p>Event  </p>
+                        <input type="text" id="event-name" placeholder="Enter event type">
+                        <input type="date" id="event-date">
+                        <input type="time" id="event-time">
+                        <button type="button" onclick="saveEvent()">Set Reminder</button>
+                        <p id="save-status" class="status-message"></p>
                     </div>`;
             }
-
-            for (let i = 1; i <= 10; i++) {
-                eventContainer.innerHTML += createEventBox(i);
-            }
+            eventContainer.innerHTML = createEventBox();
 });
+  function saveEvent() {
+    const eventName = document.getElementById(`event-name`).value.trim();
+    const eventDate = document.getElementById(`event-date`).value;
+    const eventTime = document.getElementById(`event-time`).value;
+    const statusElement = document.getElementById(`save-status`);
 
-        function saveEvent(eventIndex) {
-    const eventName = document.getElementById(`event${eventIndex}-name`).value.trim();
-    const eventDate = document.getElementById(`event${eventIndex}-date`).value;
-    const eventTime = document.getElementById(`event${eventIndex}-time`).value;
-    const statusElement = document.getElementById(`save-status-${eventIndex}`);
-
+// Get existing events for this section
     if (eventName && eventDate && eventTime) {
-        const existingName = localStorage.getItem(`${section}-event${eventIndex}-name`);
-        const existingDate = localStorage.getItem(`${section}-event${eventIndex}-date`);
-        const existingTime = localStorage.getItem(`${section}-event${eventIndex}-time`);
+        let eventsData = JSON.parse(localStorage.getItem(`${section}-events`)) || [];
 
-        if (existingName || existingDate || existingTime) {
-            statusElement.textContent = "Event already exists. Please choose another slot.";
-            statusElement.style.color = "red";
-            alert("Event already exists. Please choose another slot.");
-        } else {
-            localStorage.setItem(`${section}-event${eventIndex}-name`, eventName);
-            localStorage.setItem(`${section}-event${eventIndex}-date`, eventDate);
-            localStorage.setItem(`${section}-event${eventIndex}-time`, eventTime);
+        // Create new event object
+        const newEvent = {
+            name: eventName.toLowerCase(),
+            date: eventDate,
+            time: eventTime
+        };
+        //handling duplicates
+    let isDuplicate = eventsData.some(event => 
+        event.name === newEvent.name &&
+        event.date === newEvent.date &&
+        event.time === newEvent.time
+    );
 
-            statusElement.textContent = "Event Saved Successfully!";
-            statusElement.style.color = "green";
-            alert("Event Saved Successfully");
-        }
+    if (isDuplicate) {
+         statusElement.textContent = "This event already exists!";
+        statusElement.style.color = "red";
+        return; 
+    }
+
+        // Add the new event to the array
+        eventsData.push(newEvent);
+
+        // Save updated array back to localStorage
+        localStorage.setItem(`${section}-events`, JSON.stringify(eventsData));
+
+        statusElement.textContent = "Event Saved Successfully!";
+        statusElement.style.color = "green";
+        alert("Event Saved Successfully");
+
+        // Clear the form
+        document.getElementById(`event-name`).value = "";
+        document.getElementById(`event-date`).value = "";
+        document.getElementById(`event-time`).value = "";
     } else {
         statusElement.textContent = "Please fill in all fields!";
         statusElement.style.color = "red";

@@ -4,68 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Academics Saved Events</title>
+
     <style>
-        #event-list li {
-            margin-bottom: 10px;
-            padding: 8px;
-            font-size: 1.5rem;
-            list-style-type: none; 
-            background-color: #b1b4c1; 
-            border-radius: 5px; 
-        }
+       #event-list {
+        margin: 20px auto;
+        max-width: 600px;
+        padding: 10px;
+      }
+
+.event-box {
+  background-color: #e0c1c1;
+  border-left: 7px solid #007bff;
+  padding: 15px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  transition: transform 0.2s ease;
+}
+.nav{
+    text-align: center;
+}
     </style>
 </head>
 <body>
-    <h2>Saved Events</h2>
+    <div class="nav">
+        <h2>Academics Saved Events</h2>
+    </div>
     <ul id="event-list"></ul>
     <p id="notification-message"></p>
-
-    <script>
-        window.onload = function () {
-    
-
-    const eventList = document.getElementById('event-list');
-    let eventsFound = false;
-    const currentDate = new Date();
-    const currentDateString = currentDate.toISOString().split('T')[0];
-    const currentTimeString = currentDate.toTimeString().split(' ')[0].slice(0, 5); // Extract HH:MM format
-
-    for (let i = 1; i <= 10; i++) {
-        const eventName = localStorage.getItem(`Academics-event${i}-name`);
-        const eventDate = localStorage.getItem(`Academics-event${i}-date`);
-        const eventTime = localStorage.getItem(`Academics-event${i}-time`);
-
-        if (eventName && eventDate && eventTime) {
-            const eventDateTime = new Date(`${eventDate}T${eventTime}`);
-
-            if (eventDateTime < currentDate) {
-                localStorage.removeItem(`Academics-event${i}-name`);
-                localStorage.removeItem(`Academics-event${i}-date`);
-                localStorage.removeItem(`Academics-event${i}-time`);
-                continue;
-            }
-
-            eventsFound = true;
-            const listItem = document.createElement('li');
-            listItem.textContent = `Event ${i}: ${eventName}, Date: ${eventDate}, Time: ${eventTime}`;
-            eventList.appendChild(listItem);
-
-            // Trigger notification if the event is now
-            if (eventDate === currentDateString && eventTime === currentTimeString) {
-                if (Notification.permission === "granted") {
-                    new Notification(`Reminder: ${eventName} is at ${eventTime} on ${eventDate}.`);
-                } else {
-                    alert(`Your ${eventName} is at ${eventTime} on ${eventDate}.`);
-                }
-            }
-        }
-    }
-
-    if (!eventsFound) {
-        eventList.innerText = "No events saved yet";
-    }
-};
-
-    </script>
+    <body data-section="Academics"></body>
+    <script src="saved-event.js"></script>
 </body>
 </html>
